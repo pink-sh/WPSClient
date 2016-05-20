@@ -1,8 +1,5 @@
 ###VERSION 1.1###
 
-library(httr)
-library(XML)
-
 unsink <- function(){
   
   n<-sink.number()
@@ -13,6 +10,8 @@ unsink <- function(){
   
 ######Get Capabilities######
 getCapabilities <- function(wps_uri, username, token){
+  library(httr)
+  library(XML)
   tryCatch({
   sink("")
   #build the URL
@@ -56,6 +55,9 @@ getCapabilities <- function(wps_uri, username, token){
 
 #get the objects of the algorithms description: this function manages both inputs and outputs
 getProcessObjectDescription <- function(wps_uri, username, token, process_id,is.input){
+  library(httr)
+  library(XML)
+  
   tryCatch({
   sink("")
   #set the prefixes
@@ -210,6 +212,8 @@ getProcessOutputDescription <- function(wps_uri, username, token, process_id){
 #OUTPUT RETRIEVAL
 getOutput <- function(wps_uri, username, token, process_id,keys,values)
 {
+  library(httr)
+  library(XML)
   tryCatch({
   sink("")
   #go through the keys and values and build the URL of the process
