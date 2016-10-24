@@ -18,6 +18,7 @@ getCapabilities <- function(wps_uri, username, token){
   wpsService<-paste(wps_uri,"?Request=GetCapabilities&Service=WPS",sep="")
   #get the URL with user and token
   got<-GET(wpsService,authenticate(username,token), timeout(1*3600))
+	  print(got)
   #parse the tree
   xmlfile <- xmlTreeParse(got)
   class(xmlfile)
