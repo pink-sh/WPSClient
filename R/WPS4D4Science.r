@@ -228,6 +228,7 @@ getOutput <- function(wps_uri, username, token, process_id,keys,values)
   inputs<-URLencode(inputs)
   #process URL building
   wpsService<-paste(wps_uri,"?request=Execute&service=WPS&Version=1.0.0&lang=en-US&Identifier=",process_id,"&DataInputs=",inputs,sep="")
+  print (wpsService)	  
   #output retrieval and xml parsing
   got<-GET(wpsService,authenticate(username,token), timeout(20*3600))
   xmlfile <- xmlTreeParse(got)
