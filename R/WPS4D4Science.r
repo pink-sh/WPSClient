@@ -9,15 +9,15 @@ unsink <- function(){
 }
   
 ######Get Capabilities######
-getCapabilities <- function(wps_uri, username, token){
+getCapabilities <- function(wps_uri, token){
   library(httr)
   library(XML)
   tryCatch({
   sink("")
   #build the URL
-  wpsService<-paste(wps_uri,"?Request=GetCapabilities&Service=WPS",sep="")
+  wpsService<-paste(wps_uri,"?Request=GetCapabilities&Service=WPS&gcube-token=",token,sep="")
   #get the URL with user and token
-  got<-GET(wpsService,authenticate(username,token), timeout(1*3600))
+  got<-GET(wpsService, timeout(1*3600))
   print(paste("GOT: ", got))
   #parse the tree
   xmlfile <- xmlTreeParse(got)
@@ -55,7 +55,7 @@ getCapabilities <- function(wps_uri, username, token){
 }
 
 #get the objects of the algorithms description: this function manages both inputs and outputs
-getProcessObjectDescription <- function(wps_uri, username, token, process_id,is.input){
+getProcessObjectDescription <- function(wps_uri, token, process_id,is.input){
   library(httr)
   library(XML)
   
@@ -74,9 +74,10 @@ getProcessObjectDescription <- function(wps_uri, username, token, process_id,is.
   }
   
   #build the process description URL
-  wpsService<-paste(wps_uri,"?Request=DescribeProcess&Service=WPS&Version=1.0.0&Identifier=",process_id,sep="")
+  wpsService<-paste(wps_uri,"?Request=DescribeProcess&Service=WPS&Version=1.0.0&Identifier=",process_id,
+		    "&gcube-token=",token,sep="")
   #parse the xml tree
-  got<-GET(wpsService,authenticate(username,token),timeout(1*3600))
+  got<-GET(wpsService,timeout(1*3600))
   xmlfile <- xmlTreeParse(got)
   class(xmlfile)
   xmltop = xmlRoot(xmlfile)
@@ -201,17 +202,17 @@ getProcessObjectDescription <- function(wps_uri, username, token, process_id,is.
 }
 
 #PROCESS INPUT DESCRIPTION
-getProcessInputDescription <- function(wps_uri, username, token, process_id){
-  return (getProcessObjectDescription(wps_uri, username, token, process_id,is.input=T))
+getProcessInputDescription <- function(wps_uri, token, process_id){
+  return (getProcessObjectDescription(wps_uri, token, process_id,is.input=T))
 }
 
 #PROCESS OUTPUT DESCRIPTION
-getProcessOutputDescription <- function(wps_uri, username, token, process_id){
-  return (getProcessObjectDescription(wps_uri, username, token, process_id,is.input=F))
+getProcessOutputDescription <- function(wps_uri, token, process_id){
+  return (getProcessObjectDescription(wps_uri, token, process_id,is.input=F))
 }
 
 #OUTPUT RETRIEVAL
-getOutput <- function(wps_uri, username, token, process_id,keys,values)
+getOutput <- function(wps_uri, token, process_id,keys,values)
 {
   library(httr)
   library(XML)
@@ -227,9 +228,10 @@ getOutput <- function(wps_uri, username, token, process_id,keys,values)
   }
   inputs<-URLencode(inputs)
   #process URL building
-  wpsService<-paste(wps_uri,"?request=Execute&service=WPS&Version=1.0.0&lang=en-US&Identifier=",process_id,"&DataInputs=",inputs,sep="")
+  wpsService<-paste(wps_uri,"?request=Execute&service=WPS&Version=1.0.0&lang=en-US&Identifier=",process_id,"&DataInputs=",inputs,
+		    "&gcube-token=",token,sep="")
   #output retrieval and xml parsing
-  got<-GET(wpsService,authenticate(username,token), timeout(20*3600))
+  got<-GET(wpsService,timeout(20*3600))
   xmlfile <- xmlTreeParse(got)
   class(xmlfile)
   xmltop = xmlRoot(xmlfile)
